@@ -160,7 +160,23 @@
     window.addEventListener("resize", function () { vesA(Math.max(actual, 0), false); });
   });
 
-  /* Botons de copiar */
+  /* Vídeos: portada pròpia que carrega el reproductor en fer clic */
+const ytSrc = (id, list) => "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0&modestbranding=1&playsinline=1" + (list ? "&list=" + list : "");
+const ytFrame = (id, list, t) => { const f = document.createElement("iframe"); f.src = ytSrc(id, list); f.title = t || "Vídeo"; f.allowFullscreen = true; f.allow = "autoplay; accelerometer; encrypted-media; picture-in-picture; fullscreen"; f.setAttribute("referrerpolicy", "strict-origin-when-cross-origin"); return f; };
+$$(".v-play").forEach(b => b.addEventListener("click", () => { const fig = b.closest(".video-fig"); b.replaceWith(ytFrame(b.dataset.yt, b.dataset.list, fig && fig.dataset.t)); }));
+const repro = $("#repro");
+if (repro) {
+  const cont = $(".repro-video", repro), peu = $(".repro-peu", repro);
+  const tanca = () => { if (repro.open) repro.close(); };
+  repro.addEventListener("close", () => { cont.innerHTML = ""; });
+  repro.addEventListener("click", e => { if (e.target === repro || e.target.closest(".repro-tanca")) tanca(); });
+  $$(".bg-card").forEach(a => a.addEventListener("click", e => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || !repro.showModal) return;
+    e.preventDefault(); cont.innerHTML = ""; cont.appendChild(ytFrame(a.dataset.yt, "", a.dataset.t)); peu.textContent = a.dataset.t; repro.showModal();
+  }));
+}
+
+/* Botons de copiar */
   $$(".copia").forEach(function (b) {
     b.addEventListener("click", function () {
       var el = document.getElementById(b.dataset.copia), txt = el.textContent;

@@ -271,7 +271,7 @@ dialog.lb p { text-align: center; margin-top: 12px; font-size: 15px; max-width: 
 
 /* Vídeos */
 .video-fig { margin: 0; display: grid; gap: 8px; min-width: 0; }
-.video { aspect-ratio: 16 / 9; border-radius: 20px; overflow: hidden; background: #0a1530; }
+.video { aspect-ratio: 16 / 9; border-radius: 28px; overflow: hidden; background: #0a1530; box-shadow: 0 22px 50px -24px rgba(17,33,66,.55); position: relative; }
 .video iframe { width: 100%; height: 100%; border: 0; display: block; }
 .video-fig figcaption { font-size: 13.5px; color: var(--fg-soft); line-height: 1.4; }
 .video-enllac { display: flex; align-items: center; gap: 16px; text-decoration: none; color: #fff; background: #0a1530; border-radius: 20px; padding: 22px 24px; }
@@ -308,3 +308,35 @@ dialog.lb p { text-align: center; margin-top: 12px; font-size: 15px; max-width: 
 .evo-barra { height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; max-width: 420px; margin-inline: auto; width: 100%; }
 .evo-barra i { display: block; height: 100%; width: 0; background: var(--link); border-radius: 4px; transition: width .6s cubic-bezier(.2,.7,.2,1); }
 @media (prefers-reduced-motion: reduce) { .evo-slide, .evo-barra i { transition: none; } .evo-gran.canvia { animation: none; } .evo-track { scroll-behavior: auto; } }
+
+/* ---- Vídeos: portada pròpia, més grans i arrodonits ---- */
+.video-fig { width: 100%; max-width: 920px; }
+.bloc .prose:has(.video-fig) { max-width: none; }
+.video iframe { position: absolute; inset: 0; }
+.v-play { all: unset; box-sizing: border-box; cursor: pointer; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,21,48,.05), rgba(10,21,48,.45)), var(--poster) center / cover, #0a1530; display: grid; place-items: center; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.v-play:hover { transform: scale(1.025); }
+.v-play:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
+.v-btn { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: rgba(255,255,255,.94); color: var(--navy, #112142); box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: transform .3s; padding-left: 4px; box-sizing: border-box; }
+.v-play:hover .v-btn { transform: scale(1.1); }
+.video-fig figcaption a { color: var(--fg-soft); font-size: 12.5px; opacity: .8; }
+
+/* ---- Hemeroteca Badagegants ---- */
+.bg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; margin-top: 8px; }
+.bg-card { display: grid; gap: 12px; text-decoration: none; color: inherit; }
+.bg-img { position: relative; aspect-ratio: 16 / 10; border-radius: 22px; overflow: hidden; background: linear-gradient(180deg, rgba(10,21,48,.0), rgba(10,21,48,.35)), var(--poster) center / cover, #0a1530; box-shadow: 0 16px 36px -22px rgba(17,33,66,.6); transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s; display: block; }
+.bg-card:hover .bg-img, .bg-card:focus-visible .bg-img { transform: translateY(-5px); box-shadow: 0 26px 44px -22px rgba(17,33,66,.7); }
+.bg-play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: grid; place-items: center; width: 54px; height: 54px; padding-left: 3px; box-sizing: border-box; border-radius: 50%; background: rgba(255,255,255,.94); color: #112142; transition: transform .3s; }
+.bg-card:hover .bg-play { transform: scale(1.12); }
+.bg-dur { position: absolute; right: 10px; bottom: 10px; font-size: 12px; font-weight: 600; color: #fff; background: rgba(10,21,48,.72); padding: 3px 9px; border-radius: 99px; }
+.bg-text { display: grid; gap: 2px; padding-inline: 4px; }
+.bg-any { font-family: "Young Serif", serif; font-size: 1.7rem; line-height: 1.1; color: var(--link); }
+.bg-tit { font-size: 15px; color: var(--fg); line-height: 1.35; }
+.repro { border: 0; padding: 0; background: transparent; max-width: min(1100px, 94vw); width: 100%; margin: auto; overflow: visible; }
+.repro::backdrop { background: rgba(6,12,28,.82); backdrop-filter: blur(6px); }
+.repro-in { position: relative; display: grid; gap: 12px; }
+.repro-video { aspect-ratio: 16 / 9; border-radius: 26px; overflow: hidden; background: #000; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.repro-video iframe { width: 100%; height: 100%; border: 0; display: block; }
+.repro-peu { color: #fff; text-align: center; margin: 0; font-size: 15px; }
+.repro-tanca { position: absolute; right: 0; top: -48px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.15); color: #fff; font-size: 26px; line-height: 1; cursor: pointer; }
+.repro-tanca:hover { background: rgba(255,255,255,.3); }
+@media (max-width: 560px) { .bg-grid { grid-template-columns: 1fr 1fr; gap: 14px; } .bg-any { font-size: 1.35rem; } .bg-tit { font-size: 13.5px; } .v-btn { width: 58px; height: 58px; } }
