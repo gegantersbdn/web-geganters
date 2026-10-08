@@ -105,6 +105,61 @@
     }).join("");
   }
 
+
+  /* Carrusel d'evolució */
+  $$("[data-evo]").forEach(function (root) {
+    var track = $(".evo-track", root), slides = $$(".evo-slide", root), chips = $$(".evo-any", root);
+    var gran = $("[data-evo-any]", root), peu = $("[data-evo-peu]", root), barra = $(".evo-barra i", root);
+    var actual = -1, raf = 0, bloq = 0;
+    var centre = function (i) { var s = slides[i]; return s.offsetLeft - (track.clientWidth - s.offsetWidth) / 2; };
+    var vesA = function (i, suau) {
+      i = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: centre(i), behavior: (suau === false || reduce) ? "auto" : "smooth" });
+    };
+    var marca = function (i) {
+      if (i === actual) return; var anterior = actual; actual = i;
+      slides.forEach(function (s, k) { s.classList.toggle("actiu", k === i); });
+      var any = slides[i].dataset.any;
+      chips.forEach(function (c) { c.classList.toggle("actiu", c.dataset.any === any); });
+      peu.textContent = slides[i].dataset.peu;
+      if (gran.textContent !== any) { gran.textContent = any; if (!reduce) { gran.classList.remove("canvia"); void gran.offsetWidth; gran.classList.add("canvia"); } }
+      barra.style.width = ((i + 1) / slides.length * 100).toFixed(1) + "%";
+    };
+    var mesProper = function () {
+      var mig = track.scrollLeft + track.clientWidth / 2, millor = 0, d = 1e9;
+      slides.forEach(function (s, k) { var x = Math.abs(s.offsetLeft + s.offsetWidth / 2 - mig); if (x < d) { d = x; millor = k; } });
+      return millor;
+    };
+    track.addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(function () { raf = 0; marca(mesProper()); }); }, { passive: true });
+    $("[data-evo-prev]", root).addEventListener("click", function () { vesA(mesProper() - 1); });
+    $("[data-evo-next]", root).addEventListener("click", function () { vesA(mesProper() + 1); });
+    chips.forEach(function (c) { c.addEventListener("click", function () { for (var k = 0; k < slides.length; k++) { if (slides[k].dataset.any === c.dataset.any) { vesA(k); break; } } }); });
+    track.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); vesA(mesProper() + 1); } else if (e.key === "ArrowLeft") { e.preventDefault(); vesA(mesProper() - 1); }
+    });
+    /* una foto que no és la central es porta al centre; la central s'amplia */
+    track.addEventListener("click", function (e) {
+      var s = e.target.closest(".evo-slide"); if (!s) return;
+      if (bloq) { e.stopPropagation(); e.preventDefault(); return; }
+      var k = slides.indexOf(s); if (k !== mesProper()) { e.stopPropagation(); e.preventDefault(); vesA(k); }
+    }, true);
+    /* arrossegar amb el ratolí */
+    var x0 = 0, s0 = 0, baixa = false;
+    track.addEventListener("pointerdown", function (e) { if (e.pointerType !== "mouse" || e.button !== 0) return; baixa = true; x0 = e.clientX; s0 = track.scrollLeft; bloq = 0; });
+    window.addEventListener("pointermove", function (e) {
+      if (!baixa) return; var dx = e.clientX - x0;
+      if (Math.abs(dx) > 6) { track.classList.add("arrossega"); bloq = 1; }
+      if (bloq) track.scrollLeft = s0 - dx;
+    });
+    window.addEventListener("pointerup", function (e) {
+      if (!baixa) return; baixa = false;
+      if (bloq) { var dx = e.clientX - x0, k = mesProper(); track.classList.remove("arrossega"); if (Math.abs(dx) > 60) k = Math.max(0, Math.min(slides.length - 1, dx < 0 ? Math.max(k, mesProper()) : Math.min(k, mesProper()))); vesA(k); setTimeout(function () { bloq = 0; }, 60); }
+    });
+    track.addEventListener("dragstart", function (e) { e.preventDefault(); });
+    marca(0); vesA(0, false);
+    window.addEventListener("resize", function () { vesA(Math.max(actual, 0), false); });
+  });
+
   /* Botons de copiar */
   $$(".copia").forEach(function (b) {
     b.addEventListener("click", function () {
