@@ -55,7 +55,7 @@
   var salts = $$(".salts a");
   if (salts.length && "IntersectionObserver" in window) {
     var map = {}; salts.forEach(function (a) { map[a.getAttribute("href").slice(1)] = a; });
-    var ioS = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { salts.forEach(function (a) { a.classList.remove("actiu"); }); var a = map[e.target.id]; if (a) { a.classList.add("actiu"); a.scrollIntoView({ block: "nearest", inline: "center" }); } } }); }, { rootMargin: "-35% 0px -60% 0px" });
+    var ioS = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { salts.forEach(function (a) { a.classList.remove("actiu"); }); var a = map[e.target.id]; if (a) { a.classList.add("actiu"); var c = a.parentElement; if (c && c.scrollWidth > c.clientWidth) c.scrollLeft = a.offsetLeft - (c.clientWidth - a.offsetWidth) / 2; } } }); }, { rootMargin: "-35% 0px -60% 0px" });
     Object.keys(map).forEach(function (id) { var el = document.getElementById(id); if (el) ioS.observe(el); });
   }
 
